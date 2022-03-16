@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>화면 구현</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" 
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" 
+    crossorigin="anonymous"></script>
+</head>
+
+<style>
+    body {
+        height: 100vh;
+    }
+    h1, h4, h3, form, p {
+        text-align: center;
+        color: white;
+        text-shadow: darkgray 1px 1px 2px;
+    }
+    h1 {
+        color: lightgray;
+        text-shadow: gray 2px 2px 2px;
+    }
+    #hint {
+        font-size: small;
+        color: gray;
+    }
+    #start {
+        background-color: lightpink;
+        color: rgb(104, 104, 104);
+        padding: 10px;
+        border-radius: 20px;
+        box-shadow: 2px 2px 1px;
+        text-decoration: none;
+        
+        
+    }
+    #start:hover {
+        background-color: white;
+    }
+    /*form input[type="text"] {
+        background:transparent;
+        border: none;
+        border-bottom: 1px solid white;
+    }
+    */
+    form input[type="text"]:focus {
+        background:transparent;
+        border: none;
+    }
+
+
+</style>
+
+<body>
+
+    <h1>넌센스 퀴즈 맞추기</h1>
+    <h4>3문제 - 중복있음</h3>
+    <h3><a href="" id="start">시작</a></h3>
+    <p id="quiz"></p>
+    <p id="hint"></p>
+    
+    <form id="input" style="display: none;">
+        <input type="text" id="user_input">
+    </form>
+
+    <p id="score"></p>
+
+    <script>
+        // 배경이미지 랜덤
+        const images = ["0.jpg", "1.jpg", "2.jpg"]
+        let i = Math.floor( Math.random()*images.length )
+        $("body").css("background", `url(./배경/${i}.jpg) no-repeat center fixed`)
+
+        // 유저가 푼 문제 수
+        let count = 0;
+        // 문제 랜덤선택
+        let random = 0; 
+        // 유저의 점수
+        let score = 0;
+        // 문제 모음
+        const question = [
+            {quiz:"학생들이 싫어하는 피자는?", answer:"책피자", hint: "힌트: 책OO" },
+            {quiz:"신이 화가 나면?", answer:"신발끈", hint: "힌트: O발끈" },
+            {quiz:"공이 웃으면?", answer:"풋볼", hint: "힌트: 풋O" },
+            {quiz:"도둑이 몰래 훔친 돈은?", answer:"슬그머니", hint: "힌트: 슬그OO"},
+            {quiz:"자가용의 반대말은?", answer:"커용", hint: "힌트: O용"}
+        ]
+
+        // 시작버튼 -> 문제 출력 + 슬라이드다운
+        $("#start").on("click", function(e) {
+            e.preventDefault();
+            
+            
+            count = 0;
+            score = 0;
+            startQuiz();
+            $("#input").hide().slideDown();
+            $("input").children().val("");
+            $("#score").text("");
+        })
+        
+        // submit시 user input과 정답 비교
+        $("#input").on("submit", function(e) {
+            e.preventDefault();
+            
+            count ++;
+
+            // 랜덤 문제의 정답
+            //random = Math.floor( Math.random()*question.length );
+            const answer = question[random].answer;
+            
+            // 유저의 답변
+            const $user = $("#input").children().val();
+            
+            if ( answer == $user ) {
+                score++;
+                $("#input").children().val("");
+                $("#score").text(`${score}개 맞췄습니다!`);
+            }
+            // 새로운 문제 출제
+            startQuiz();
+            // 스코어 표시
+            if( count == 3 ) {
+                $("#input").hide();
+                $("#quiz").text("");
+                $("#hint").text("");
+                
+                count = 0;
+                score = 0;
+            }
+            
+        });
+
+        // 새로운 문제 출제하는 함수
+        function startQuiz() {
+            random = Math.floor( Math.random()*question.length );
+            $("#quiz").text(question[random].quiz);
+            $("#hint").text(question[random].hint);
+        }
+
+    </script>
+</body>
+</html>
